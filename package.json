@@ -11,12 +11,13 @@
   "description": "FSOPEN21_part4",
   "main": "index.js",
   "devDependencies": {
+    "jest": "^27.2.5",
     "nodemon": "^2.0.13"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "jest --verbose"
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/werticalz/FSOpen21/issues"
   },
-  "homepage": "https://github.com/werticalz/FSOpen21#readme"
+  "homepage": "https://github.com/werticalz/FSOpen21#readme",
+  "jest": {
+    "testEnvironment": "node"
+  }
 }
