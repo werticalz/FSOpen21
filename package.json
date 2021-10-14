@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^6.0.10"
+  },
+  "name": "part4",
+  "version": "1.0.0",
+  "description": "FSOPEN21_part4",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/werticalz/FSOpen21.git"
+  },
+  "author": "V-VKorpela",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/werticalz/FSOpen21/issues"
+  },
+  "homepage": "https://github.com/werticalz/FSOpen21#readme"
+}
