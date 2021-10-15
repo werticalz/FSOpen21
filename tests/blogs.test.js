@@ -1,6 +1,8 @@
 const dummy = require('../utils/list_helper').dummy
 const totalLikes = require('../utils/list_helper').totalLikes
 const favoriteBlog = require('../utils/list_helper').favoriteBlog
+const mostBlogs = require('../utils/list_helper').mostBlogs
+const mostLikes = require('../utils/list_helper').mostLikes
 
 const blogs = [
     {
@@ -90,5 +92,19 @@ test('Highest likes blog returns the correct one', () => {
         url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
         likes: 12,
         __v: 0
+    })
+})
+
+test('Most blogs writer returns correct info', () => {
+    expect(mostBlogs(blogs)).toEqual({
+        author: 'Robert C. Martin',
+        blogs: 3
+    })
+})
+
+test('Most likes by any author returns correct info', () => {
+    expect(mostLikes(blogs)).toEqual({
+        author: 'Edsger W. Dijkstra',
+        likes: 17
     })
 })
