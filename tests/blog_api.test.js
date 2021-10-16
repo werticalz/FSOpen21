@@ -30,6 +30,23 @@ describe('Initial blogs', () => {
     })
 })
 
+test('posting a new blog works', async () => {
+    const newBlog = {
+        author: 'Me',
+        title: 'About me',
+        url: 'nonexistent'
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
