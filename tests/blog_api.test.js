@@ -23,6 +23,11 @@ describe('Initial blogs', () => {
         
         expect(response.body).toHaveLength(helper.initialBlogs.length)
     })
+
+    test('return field id', async () => {
+        const response = await api.get('/api/blogs')
+        expect(response.body[0].id).toBeDefined()
+    })
 })
 
 afterAll(() => {
