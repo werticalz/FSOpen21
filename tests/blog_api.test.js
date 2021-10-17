@@ -20,7 +20,7 @@ describe('Initial blogs', () => {
 
     test('have the right amount', async () => {
         const response = await api.get('/api/blogs')
-        
+
         expect(response.body).toHaveLength(helper.initialBlogs.length)
     })
 
@@ -47,6 +47,30 @@ test('posting a new blog works', async () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 })
 
+test('posting a blog with no like value returns default value, 0', async () => {
+    const newBlog = {
+        author: 'No-one',
+        title: 'No title',
+        url: 'www.nowhere.gone'
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+
+    const response = await api
+        .get('/api/blogs')
+        .expect(200)
+
+    response.body.forEach(e => {
+        expect(e.likes).toBeDefined()
+        console.log(e)
+        e.title === 'No title'
+            ? expect(e.likes).toEqual(0)
+            : NaN
+    })
+})
 afterAll(() => {
     mongoose.connection.close()
 })
