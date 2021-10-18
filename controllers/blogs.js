@@ -14,17 +14,15 @@ blogsRouter.post('/', async (request, res) => {
 
 blogsRouter.put('/:id', async (req, res) => {
     const b = req.body
-    
+    const id = { _id: req.params.id }
     const blog = {
         title: b.title,
         author: b.author,
         likes: b.likes
     }
 
-    Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
-        .then(updatedBlog => {
-            res.json(updatedBlog.toJSON())
-        })
+    await Blog.findOneAndUpdate(id, blog, { new: true })
+    res.status(200).end()
 })
 
 blogsRouter.delete('/:id', async (req, res) => {

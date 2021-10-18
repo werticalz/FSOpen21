@@ -2,7 +2,7 @@ const supertest = require('supertest')
 const mongoose = require('mongoose')
 const app = require('../app')
 const Blog = require('../models/blog')
-const helper = require('./test_helper_backend')
+const helper = require('./test_helper')
 const api = supertest(app)
 
 beforeEach(async () => {
@@ -100,7 +100,7 @@ describe('Deleting or modifying blogposts:', () => {
 
     test('updating the likes of a post works', async () => {
         const blogsAtStart = await helper.blogsInDb()
-        const blogToUpdate = blogsAtStart[1]
+        const blogToUpdate = blogsAtStart[2]
         blogToUpdate.likes = blogToUpdate.likes + 100
 
         await api
@@ -109,10 +109,7 @@ describe('Deleting or modifying blogposts:', () => {
             .expect(200)
 
         const blogsAtEnd = await helper.blogsInDb()
-        expect(blogsAtEnd[1].likes).toEqual(blogToUpdate.likes)
+        expect(blogsAtEnd[2].likes).toEqual(blogToUpdate.likes)
 
     })
-})
-afterAll(() => {
-    mongoose.connection.close()
 })
