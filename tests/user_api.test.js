@@ -4,21 +4,25 @@ const bcrypt = require('bcrypt')
 const app = require('../app')
 const User = require('../models/user')
 const helper = require('./test_helper')
+const blog = require('../models/blog')
 const api = supertest(app)
 
 
 
-describe('Tests with a database with one user', () => {
+describe('Tests with users and blogs populated', () => {
     beforeEach(async () => {
         await User.deleteMany({})
-        const passHash = await bcrypt.hash('sekret', 10)
-        const user = new User({
-            username: 'meh',
-            name: 'me',
-            passwordHash: passHash
-        })
+        await blog.deleteMany({})
+        await User.insertMany(helper.initialUsers)
+        await blog.insertMany(helper.initialBlogs)
+    })
 
-        await user.save()
+    test('Get returns a populated json', async () => {
+        await api
+            .get('/api/users')
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+        const users = await helper.usersInDb()
     })
 
     test('Another user can be created', async () => {

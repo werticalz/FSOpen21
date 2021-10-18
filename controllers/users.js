@@ -1,18 +1,19 @@
 const usersRouter = require('express').Router()
 const bcrypt = require('bcrypt')
-const { response } = require('express')
 const User = require('../models/user')
 
 usersRouter.get('/', async (req, res) => {
-    const users = await User.find({})
-    res.json(users.map(blog => blog.toJSON()))
+    const users = await User
+        .find({})
+        .populate('blogs')
+    res.json(users.map(user => user.toJSON()))
 })
 
 usersRouter.post('/', async (req, res) => {
     const b = req.body
 
     if (b.password.length < 3) {
-        return res.status(400).json({ error: 'Password too short'})
+        return res.status(400).json({ error: 'Password too short' })
     }
     const saltRounds = 10
     const passHash = await bcrypt.hash(b.password, saltRounds)

@@ -3,14 +3,14 @@ const mongoose = require('mongoose')
 const app = require('../app')
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
+const user = require('../models/user')
 const api = supertest(app)
 
-beforeEach(async () => {
-    await Blog.deleteMany({})
-    await Blog.insertMany(helper.initialBlogs)
-})
-
 describe('Initial blogs', () => {
+    beforeEach(async () => {
+        await Blog.deleteMany({})
+        await Blog.insertMany(helper.initialBlogs)
+    })
     test('are in JSON format', async () => {
         await api
             .get('/api/blogs')
@@ -32,11 +32,18 @@ describe('Initial blogs', () => {
 
 
 describe('Posting tests:', () => {
+    beforeEach(async () => {
+        await Blog.deleteMany({})
+        await user.deleteMany({})
+        await user.insertMany(helper.initialUsers)
+        await Blog.insertMany(helper.initialBlogs)
+    })
     test('posting a new blog works', async () => {
         const newBlog = {
             author: 'Me',
             title: 'About me',
-            url: 'nonexistent'
+            url: 'nonexistent',
+            user: '616d878257834a67774dfe54'
         }
 
         await api
@@ -53,7 +60,8 @@ describe('Posting tests:', () => {
         const newBlog = {
             author: 'No-one',
             title: 'No title',
-            url: 'www.nowhere.gone'
+            url: 'www.nowhere.gone',
+            user: '616d878257834a67774dfe54'
         }
 
         await api
@@ -76,7 +84,8 @@ describe('Posting tests:', () => {
     test('posting a blog without either title or url returns 400', async () => {
         const newBlog = {
             author: 'No-one',
-            url: 'www.nowhere.gone'
+            url: 'www.nowhere.gone',
+            user: '616d878257834a67774dfe54'
         }
 
         await api.post('/api/blogs').send(newBlog).expect(400)
