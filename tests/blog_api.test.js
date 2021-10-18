@@ -122,3 +122,7 @@ describe('Deleting or modifying blogposts:', () => {
 
     })
 })
+
+afterAll(() => {
+    mongoose.connection.close()
+})
