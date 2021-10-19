@@ -2,26 +2,23 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, res) => {
     const blogs = await Blog.find({}).populate('user')
     res.json(blogs.map(blog => blog.toJSON()))
 })
 
-blogsRouter.post('/', async (request, res) => {
-    const blog = new Blog(request.body)
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!request.token || !decodedToken.id) {
-        return res.status(401).json({ error: 'Token missing or invalid' })
+blogsRouter.post('/', middleware.userExtractor, async (request, res) => {
+    if (!request.user) {
+        return res.status(401).json({ error: 'Invalid token' })
     }
-
-    const u = await User.findById(decodedToken.id)
-    blog.user = u._id
-
+    const blog = new Blog(request.body)
+    blog.user = request.user
 
     const savedBlog = await blog.save()
-    u.blogs = u.blogs.concat(savedBlog._id)
-    await u.save({ blogs: u.blogs })
+    blog.user.blogs = blog.user.blogs.concat(savedBlog._id)
+    await blog.user.save()
 
     res.status(200).json(savedBlog.toJSON())
 })
@@ -39,19 +36,16 @@ blogsRouter.put('/:id', async (req, res) => {
     res.status(200).end()
 })
 
-blogsRouter.delete('/:id', async (req, res) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (req, res) => {
     const blogToRemove = await Blog.findById(req.params.id)
-    const decodedToken = jwt.verify(req.token, process.env.SECRET)
-    if (!req.token || !decodedToken.id) {
-        return res.status(401).json({ error: 'Token missing or invalid' })
-    }
-    if (blogToRemove.user.toString() !== decodedToken.id) {
+
+    if (blogToRemove.user.toString() !== req.user.id) {
         return res.status(401).json({ error: 'You are not authorized to delete this blogpost' })
     }
 
     const removedBlog = await Blog.findByIdAndRemove(req.params.id)
     !removedBlog
-        ? res.status(404).json({error: 'Blog not found'}).end()
+        ? res.status(404).json({ error: 'Blog not found' }).end()
         : res.status(204).end()
 })
 

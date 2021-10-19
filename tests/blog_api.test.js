@@ -125,6 +125,22 @@ describe('Posting tests:', () => {
         const blogsAtEnd = await helper.blogsInDb()
         expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
     })
+
+    test('posting a blog without a token returns 401', async () => {
+        const newBlog = {
+            author: 'No-one',
+            url: 'www.nowhere.gone',
+            title: "nooothing",
+            user: '616d878257834a67774dfe54'
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(401)
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    })
 })
 
 describe('Deleting or modifying blogposts:', () => {
