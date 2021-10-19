@@ -1,10 +1,10 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1hcnRpbjIiLCJpZCI6IjYxNmU1OTkwNTg5YzQ5NDhiZTM3MmViMyIsImlhdCI6MTYzNDYyMzA3MCwiZXhwIjoxNjM0NjI2NjcwfQ.7lSO09d42LIVWl_xxnTb0_io9I5ZPFUSZ540gUiyk9E
 
 {
-    "title": "Ot4sikko",
-    "author": "Te5kijä" ,
-    "url": "o2soite",
-    "likes": 10,
-    "user": "616db2ecd4e3d63a0e7f8594"
+    "title": "Otsikko",
+    "url": "osoite",
+    "author": "Me",
+    "likes": 10
 }

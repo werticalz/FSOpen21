@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, res) => {
     const blogs = await Blog.find({}).populate('user')
@@ -8,20 +9,21 @@ blogsRouter.get('/', async (request, res) => {
 })
 
 blogsRouter.post('/', async (request, res) => {
-    const b = request.body
-    const u = await User.findById(b.user)
-    const blog = new Blog({
-        title: b.title,
-        author: b.author,
-        url: b.url,
-        user: u._id
-    })
+    const blog = new Blog(request.body)
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!request.token || !decodedToken.id) {
+        return res.status(401).json({ error: 'Token missing or invalid' })
+    }
+
+    const u = await User.findById(decodedToken.id)
+    blog.user = u._id
+
 
     const savedBlog = await blog.save()
     u.blogs = u.blogs.concat(savedBlog._id)
-    await u.save({blogs: u.blogs})
+    await u.save({ blogs: u.blogs })
 
-    res.json(savedBlog.toJSON())
+    res.status(200).json(savedBlog.toJSON())
 })
 
 blogsRouter.put('/:id', async (req, res) => {
@@ -38,8 +40,19 @@ blogsRouter.put('/:id', async (req, res) => {
 })
 
 blogsRouter.delete('/:id', async (req, res) => {
-    await Blog.findByIdAndRemove(req.params.id)
-    res.status(204).end()
+    const blogToRemove = await Blog.findById(req.params.id)
+    const decodedToken = jwt.verify(req.token, process.env.SECRET)
+    if (!req.token || !decodedToken.id) {
+        return res.status(401).json({ error: 'Token missing or invalid' })
+    }
+    if (blogToRemove.user.toString() !== decodedToken.id) {
+        return res.status(401).json({ error: 'You are not authorized to delete this blogpost' })
+    }
+
+    const removedBlog = await Blog.findByIdAndRemove(req.params.id)
+    !removedBlog
+        ? res.status(404).json({error: 'Blog not found'}).end()
+        : res.status(204).end()
 })
 
 module.exports = blogsRouter

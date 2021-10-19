@@ -37,17 +37,35 @@ describe('Posting tests:', () => {
         await user.deleteMany({})
         await user.insertMany(helper.initialUsers)
         await Blog.insertMany(helper.initialBlogs)
+
+        const loginUser = {
+            username: 'test',
+            name: 'tester',
+            password: 'administrator'
+        }
+        await api
+            .post('/api/users')
+            .set('Accept', 'application/json')
+            .send(loginUser)
+            .expect('Content-Type', /application\/json/)
     })
     test('posting a new blog works', async () => {
+        const loginUser = {
+            username: 'test',
+            password: 'administrator'
+        }
+        const loggedUser = await api.post('/api/login').send(loginUser).expect(200)
+        let token = `Bearer ${loggedUser.body.token}`
+
         const newBlog = {
-            author: 'Me',
+            author: 'Meh!',
             title: 'About me',
             url: 'nonexistent',
-            user: '616d878257834a67774dfe54'
+            likes: 22
         }
-
         await api
             .post('/api/blogs')
+            .set("Authorization", token)
             .send(newBlog)
             .expect(200)
             .expect('Content-Type', /application\/json/)
@@ -57,15 +75,21 @@ describe('Posting tests:', () => {
     })
 
     test('posting a blog with no likes value returns default value, 0', async () => {
+        const loginUser = {
+            username: 'test',
+            password: 'administrator'
+        }
+        const loggedUser = await api.post('/api/login').send(loginUser).expect(200)
         const newBlog = {
             author: 'No-one',
             title: 'No title',
             url: 'www.nowhere.gone',
-            user: '616d878257834a67774dfe54'
         }
+        token = loggedUser.body.token
 
         await api
             .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(newBlog)
             .expect(200)
 
@@ -82,13 +106,22 @@ describe('Posting tests:', () => {
     })
 
     test('posting a blog without either title or url returns 400', async () => {
+        const loginUser = {
+            username: 'test',
+            password: 'administrator'
+        }
+        const loggedUser = await api.post('/api/login').send(loginUser).expect(200)
         const newBlog = {
             author: 'No-one',
             url: 'www.nowhere.gone',
             user: '616d878257834a67774dfe54'
         }
 
-        await api.post('/api/blogs').send(newBlog).expect(400)
+        await api
+            .post('/api/blogs')
+            .set('Authorization', `bearer ${loggedUser.body.token}`)
+            .send(newBlog)
+            .expect(400)
         const blogsAtEnd = await helper.blogsInDb()
         expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
     })
@@ -96,16 +129,51 @@ describe('Posting tests:', () => {
 
 describe('Deleting or modifying blogposts:', () => {
     test('deleting a post works', async () => {
+        const loginUser = {
+            username: 'test',
+            password: 'administrator'
+        }
+        const loggedUser = await api.post('/api/login').send(loginUser).expect(200)
+        let token = `Bearer ${loggedUser.body.token}`
+
+        const newBlog = {
+            author: 'Meh!',
+            title: 'About me',
+            url: 'nonexistent',
+            likes: 22
+        }
+        await api
+            .post('/api/blogs')
+            .set("Authorization", token)
+            .send(newBlog)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const blogsAtStart = await helper.blogsInDb()
+        const blogToDelete = blogsAtStart[blogsAtStart.length -1]
+
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .set('Authorization', token)
+            .expect(204)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+        const titles = blogsAtEnd.map(b => b.title)
+        expect(titles).not.toContain(blogToDelete.title)
+    })
+    test('Deleting without a token does not work', async () => {
         const blogsAtStart = await helper.blogsInDb()
         const blogToDelete = blogsAtStart[0]
 
         await api
             .delete(`/api/blogs/${blogToDelete.id}`)
-            .expect(204)
+            .set('Authorization', "")
+            .expect(401)
 
         const blogsAtEnd = await helper.blogsInDb()
-        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
-    })
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    } )
 
     test('updating the likes of a post works', async () => {
         const blogsAtStart = await helper.blogsInDb()
@@ -119,7 +187,6 @@ describe('Deleting or modifying blogposts:', () => {
 
         const blogsAtEnd = await helper.blogsInDb()
         expect(blogsAtEnd[2].likes).toEqual(blogToUpdate.likes)
-
     })
 })
 
