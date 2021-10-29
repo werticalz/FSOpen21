@@ -11,12 +11,11 @@ const App = () => {
   const [message, setMessage] = useState(null)
   const [user, setUser] = useState(null)
 
+
   useEffect(() => {
     blogService
       .getAll()
-      .then(blogs => {
-        setBlogs(blogs)
-      })
+      .then((blogs) => setBlogs(blogs))
   }, [])
 
   useEffect(() => {
@@ -43,6 +42,7 @@ const App = () => {
         type: 'success'
       })
     } catch (exception) {
+      console.log(exception)
       setMessage({
         text: 'Unable to add this blog',
         type: 'error'
@@ -50,30 +50,53 @@ const App = () => {
     }
   }
 
+  const removeBlog = async (id, title) => {
+    const confirmation = window.confirm(`Remove ${title}?`)
+    if (confirmation) {
+      try {
+        let response = await blogService.remove(id)
+        setMessage({
+          type: 'success',
+          text: `Succesfully removed ${title} from the list`
+        })
+        response = await blogService.getAll()
+        setBlogs(response)
+      } catch (exception) {
+        console.log(exception)
+        setMessage({
+          type: 'error',
+          text: 'Unfortunately something went wrong and we were not able to remove this blog'
+        })
+      }
+    }
+  }
 
-  const increaseLikesByOne = id => {
+
+  const increaseLikesByOne = async (id) => {
     const blog = blogs.find(b => b.id === id)
     const changedBlog = { ...blog, likes: blog.likes + 1 }
 
-    blogService
-      .update(id, changedBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.map(b => b.id !== id ? b : returnedBlog))
+    try {
+      let returnedBlog = await blogService.update(id, changedBlog)
+      let response = await blogService.getAll()
+      setBlogs(response)
+      setMessage({
+        type: 'success',
+        text: `Added a like to ${returnedBlog.title}`
       })
-      .catch(error => {
-        setMessage({
-          text: `Blog ${blog.title} cannot be found`,
-          type: 'error'
-        })
+    } catch (exception) {
+      console.log(exception)
+      setMessage({
+        text: `Blog with id ${id} cannot be found`,
+        type: 'error'
       })
+    }
   }
 
   const login = async (userObject) => {
-    console.log('Handlelogin')
-    console.log(userObject)
     try {
       const user = await loginService.login(userObject)
-      
+
       blogService.setToken(user.token)
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
@@ -84,6 +107,7 @@ const App = () => {
         type: 'success',
       })
     } catch (exception) {
+      console.log(exception)
       setMessage({
         text: 'Wrong username & password combination',
         type: 'error',
@@ -92,16 +116,12 @@ const App = () => {
   }
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
-    console.log('Logout requested')
     setUser(null)
     setMessage({
       text: `Just logged out! See you soon.`,
       type: 'success'
     })
   }
-
-
-
 
   return (
     <div>
@@ -113,12 +133,13 @@ const App = () => {
 
         /> :
         <div>
-          <p>logged in as {user.name}<button onClick={handleLogout}>Logout</button></p>
+          <p>Logged in as {user.name}</p>
+          <button className='button' onClick={handleLogout}>Logout</button>
           <BlogForm addBlog={addBlog} />
         </div>}
       <h2>Blogs:</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {blogs.sort((x, y) => (x.likes > y.likes ? -1 : 1)) && blogs.map((blog) =>
+        <Blog increaseLikesByOne={increaseLikesByOne} blog={blog} user={user} removeBlog={removeBlog} />
       )}
     </div>
   )

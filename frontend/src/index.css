@@ -13,3 +13,37 @@
 .notification--success{
   color: green;
 }
+.button {
+  background: white;
+  display:inline-block;
+  padding: 8px;
+  border-radius: 5px;
+  margin: 5px
+}
+
+.button--cancel {
+  color: tomato;
+}
+
+.button__small {
+  padding: 2px;
+  margin: 1px;
+}
+
+.button:hover {
+  color:white;
+  background: black;
+}
+
+.blog {
+  margin-bottom: 3px;
+}
+
+.blog:hover {
+  background-color: lightgrey;
+}
+
+.blog__title {
+  font-size: large;
+  font-weight: bold;
+}
