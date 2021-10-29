@@ -77,12 +77,12 @@ const App = () => {
     const changedBlog = { ...blog, likes: blog.likes + 1 }
 
     try {
-      let returnedBlog = await blogService.update(id, changedBlog)
+      await blogService.update(id, changedBlog)
       let response = await blogService.getAll()
       setBlogs(response)
       setMessage({
         type: 'success',
-        text: `Added a like to ${returnedBlog.title}`
+        text: `Added a like to ${blog.title}`
       })
     } catch (exception) {
       console.log(exception)
@@ -118,7 +118,7 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
     setMessage({
-      text: `Just logged out! See you soon.`,
+      text: 'Just logged out! See you soon.',
       type: 'success'
     })
   }
@@ -139,7 +139,7 @@ const App = () => {
         </div>}
       <h2>Blogs:</h2>
       {blogs.sort((x, y) => (x.likes > y.likes ? -1 : 1)) && blogs.map((blog) =>
-        <Blog increaseLikesByOne={increaseLikesByOne} blog={blog} user={user} removeBlog={removeBlog} />
+        <Blog key={blog.id} increaseLikesByOne={increaseLikesByOne} blog={blog} user={user} removeBlog={removeBlog} />
       )}
     </div>
   )

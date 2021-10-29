@@ -36,4 +36,4 @@ const update = async (id, newObject) => {
   return response.data
 }
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
-export default { getAll, create, update, setToken, remove}
+export default { getAll, create, update, setToken, remove }
