@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import Togglable from './Togglable'
 
-
-
 const BlogForm = ({ addBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -24,19 +22,22 @@ const BlogForm = ({ addBlog }) => {
   }
   return (
     <Togglable buttonLabel='Add a blog post'>
-      < form onSubmit={handleAddBlog} >
+      <form className='add_blog_form' onSubmit={handleAddBlog} >
         <div>
           Heading:
           <input
+            id='title'
             type='text'
-            name='Heading'
+            name='Title'
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
           URL:
-          <input type='text'
+          <input
+            id='url'
+            type='text'
             name='URL'
             value={url}
             onChange={({ target }) => setURL(target.value)}
@@ -44,7 +45,9 @@ const BlogForm = ({ addBlog }) => {
         </div>
         <div>
           Author:
-          <input type='text'
+          <input
+            id='author'
+            type='text'
             name='Author'
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
@@ -52,7 +55,9 @@ const BlogForm = ({ addBlog }) => {
         </div>
         <div>
           Likes:
-          <input type='number'
+          <input
+            id='likes'
+            type='number'
             name='Likes'
             value={likes}
             onChange={({ target }) => setLikes(target.value)}

@@ -19,11 +19,11 @@ describe('Initially blogs:', () => {
   beforeEach(() => {
     component = render(<Blog blog={blog} />)
   })
-  test('Initially renders title and author in the form "{title} by {author},"', () => {
+  test('renders title and author in the form "{title} by {author},"', () => {
     const divTitle = component.container.querySelector('.blog--title')
     expect(divTitle).toHaveTextContent('Testblog by Me')
   })
-  test('Initially does not render url and likes', () => {
+  test('does not render url and likes', () => {
     const component = render(<Blog blog={blog} />)
     const divText = component.container.querySelector('.blog--text')
     expect(divText).toBeDefined()
@@ -71,8 +71,4 @@ describe('Like button:', () => {
     fireEvent.click(likeButton)
     expect(mockHandler.mock.calls).toHaveLength(2)
   })
-
-
 })
-
-
