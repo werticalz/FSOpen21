@@ -25,6 +25,10 @@
   color: tomato;
 }
 
+.button__red {
+  color: tomato;
+}
+
 .button__small {
   padding: 2px;
   margin: 1px;
@@ -43,7 +47,7 @@
   background-color: lightgrey;
 }
 
-.blog__title {
+.blog--title {
   font-size: large;
   font-weight: bold;
 }
