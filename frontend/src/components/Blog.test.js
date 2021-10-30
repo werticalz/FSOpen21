@@ -10,15 +10,15 @@ const blog = {
   url: 'www.test.com',
   likes: 112
 }
-beforeEach(() => {
-  component = render(<Blog blog={blog} />)
-})
 
 afterEach(() => {
   component.unmount()
 })
 
 describe('Initially blogs:', () => {
+  beforeEach(() => {
+    component = render(<Blog blog={blog} />)
+  })
   test('Initially renders title and author in the form "{title} by {author},"', () => {
     const divTitle = component.container.querySelector('.blog--title')
     expect(divTitle).toHaveTextContent('Testblog by Me')
@@ -31,15 +31,16 @@ describe('Initially blogs:', () => {
   })
 })
 
-describe('Clicking view beside a blog', () => {
-
-  test('The button with text "view" exists', () => {
+describe('View button:', () => {
+  beforeEach(() => {
+    component = render(<Blog blog={blog} />)
+  })
+  test('exists', () => {
     const viewButton = component.getByText('view')
     expect(viewButton).toBeDefined()
   })
 
-  test('After clicking renders also url and likes', async () => {
-    const mockHandler = jest.fn()
+  test('after clicking renders also url and likes', async () => {
     const viewButton = component.getByText('view')
     fireEvent.click(viewButton)
 
@@ -50,6 +51,28 @@ describe('Clicking view beside a blog', () => {
   })
 })
 
+describe('Like button:', () => {
+  let likeButton
+  let mockHandler
+  beforeEach(() => {
+    mockHandler = jest.fn()
+    component = render(<Blog blog={blog} increaseLikesByOne={mockHandler} />)
+    const viewButton = component.getByText('view')
+    fireEvent.click(viewButton)
+    likeButton = component.getByText('Like')
+  })
 
+  test('exists', () => {
+    expect(likeButton).toBeDefined()
+  })
+
+  test('If clicked twice makes two calls to adding likes', () => {
+    fireEvent.click(likeButton)
+    fireEvent.click(likeButton)
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
+
+
+})
 
 
