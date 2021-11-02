@@ -2,14 +2,10 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 const Blog = ({ increaseLikesByOne, blog, user, removeBlog }) => {
   const [showAll, setShowAll] = useState(false)
-  let deleteButtonVisible = false
+  const [showDelete, setShowDelete] = useState(false)
 
-  if (user && blog) {
-    deleteButtonVisible = blog.user.username === user.username ? true : false
-  }
-
-  const showDelete = {
-    display: deleteButtonVisible ? '' : 'none'
+  const toggleDelete = () => {
+    setShowDelete(!showDelete)
   }
 
   const showAllBlog = () => {
@@ -17,7 +13,7 @@ const Blog = ({ increaseLikesByOne, blog, user, removeBlog }) => {
       <div>
         {blog.url}<br></br>
         {blog.likes} likes <button className='button button__small' onClick={() => increaseLikesByOne(blog.id)}>Like </button>
-        {<button style={showDelete} className='button button__small button__red' onClick={() => removeBlog(blog.id, blog.title)}>Delete</button>}<br></br>
+        {<button style={toggleDelete} className='button button__small button__red' onClick={() => removeBlog(blog.id, blog.title)}>Delete</button>}<br></br>
       </div>
     )
   }

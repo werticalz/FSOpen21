@@ -16,11 +16,12 @@ const LoginForm = ({ login }) => {
   }
 
   return (
-    <Togglable buttonLabel='Login'>
+    <Togglable id='login_Button' buttonLabel='Login'>
       <form onSubmit={handleLogin}>
         <div>
           Username:
           <input
+            id='username'
             type='text'
             value={username}
             name='Username'
@@ -28,7 +29,9 @@ const LoginForm = ({ login }) => {
         </div>
         <div>
           Password:
-          <input type='password'
+          <input
+            id='password'
+            type='password'
             value={password}
             name='Password'
             onChange={({ target }) => setPassword(target.value)} />
