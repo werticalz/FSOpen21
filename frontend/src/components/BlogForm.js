@@ -63,7 +63,7 @@ const BlogForm = ({ addBlog }) => {
             onChange={({ target }) => setLikes(target.value)}
           />
         </div>
-        <button type='submit'>Save</button>
+        <button id='submit_new_blog' type='submit'>Save</button>
       </form >
     </Togglable>
   )
