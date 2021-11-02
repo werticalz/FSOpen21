@@ -36,7 +36,7 @@ const LoginForm = ({ login }) => {
             name='Password'
             onChange={({ target }) => setPassword(target.value)} />
         </div>
-        <button type='submit' className='button'>Login</button>
+        <button id='login-button' type='submit' className='button'>Login</button>
       </form>
     </Togglable>
   )
