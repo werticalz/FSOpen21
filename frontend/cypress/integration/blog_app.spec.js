@@ -83,7 +83,7 @@ describe('Blog app', function () {
     it('Blogposts are initially arranged in right order', function () {
       cy.get(this.firstBlog).contains('Another blog')
     })
-    it.only('Adding likes modifies the order', function () {
+    it('Adding likes modifies the order', function () {
       cy.contains('A new blog').find('#view_hide_button').click().then(() => {
         cy.get('#like_button').click()
       }).then(() => {
