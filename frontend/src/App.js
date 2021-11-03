@@ -102,6 +102,7 @@ const App = () => {
         'loggedBlogappUser', JSON.stringify(user)
       )
       setUser(user.username)
+      window.location.reload(false)
       setMessage({
         text: `Logged in as ${user.name}`,
         type: 'success',

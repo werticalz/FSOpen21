@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 const Blog = ({ increaseLikesByOne, blog, user, removeBlog }) => {
   const [showAll, setShowAll] = useState(false)
   let showDelete = false
-  if (user === blog.user) {
-    showDelete = true
+  if (user) {
+    showDelete = user.username === blog.user.username ? true : false
   }
 
   const showIfSameUser = { display: showDelete ? '' : 'none' }
@@ -14,7 +14,7 @@ const Blog = ({ increaseLikesByOne, blog, user, removeBlog }) => {
       <div>
         {blog.url}<br></br>
         {blog.likes} likes <button id='like_button' className='button button__small' onClick={() => increaseLikesByOne(blog.id)}>Like </button>
-        {<button style={showIfSameUser} className='button button__small button__red' onClick={() => removeBlog(blog.id, blog.title)}>Delete</button>}<br></br>
+        {<button id='delete_button' style={showIfSameUser} className='button button__small button__red' onClick={() => removeBlog(blog.id, blog.title)}>Delete</button>}<br></br>
       </div>
     )
   }
