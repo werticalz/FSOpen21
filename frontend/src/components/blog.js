@@ -20,8 +20,8 @@ const Blog = ({ increaseLikesByOne, blog, user, removeBlog }) => {
   }
 
   return (
-    <div className='blog' key={blog.id} >
-      <div className='blog--title' key={blog.title}>{blog.title} by {blog.author}&ensp;
+    <div id='blog' className='blog' key={blog.id} >
+      <div id='blog_title' className='blog--title' key={blog.title}>{blog.title} by {blog.author}&ensp;
         <button id='view_hide_button' onClick={() => setShowAll(!showAll)}>
           {showAll ? 'hide' : 'view'}
         </button>

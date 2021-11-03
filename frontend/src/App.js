@@ -138,10 +138,11 @@ const App = () => {
           <button className='button' onClick={handleLogout}>Logout</button>
           <BlogForm addBlog={addBlog} />
         </div>}
-      <h2>Blogs:</h2>
-      {blogs.sort((x, y) => (x.likes > y.likes ? -1 : 1)) && blogs.map((blog) =>
-        <Blog key={blog.id} increaseLikesByOne={increaseLikesByOne} blog={blog} user={user} removeBlog={removeBlog} />
-      )}
+      <h2>Blogs:</h2><div className='blogs'>
+        {blogs.sort((x, y) => (x.likes > y.likes ? -1 : 1)) && blogs.map((blog) =>
+          <Blog key={blog.id} increaseLikesByOne={increaseLikesByOne} blog={blog} user={user} removeBlog={removeBlog} />
+        )}
+      </div>
     </div>
   )
 }
