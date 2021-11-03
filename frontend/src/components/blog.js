@@ -2,18 +2,19 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 const Blog = ({ increaseLikesByOne, blog, user, removeBlog }) => {
   const [showAll, setShowAll] = useState(false)
-  const [showDelete, setShowDelete] = useState(false)
-
-  const toggleDelete = () => {
-    setShowDelete(!showDelete)
+  let showDelete = false
+  if (user === blog.user) {
+    showDelete = true
   }
+
+  const showIfSameUser = { display: showDelete ? '' : 'none' }
 
   const showAllBlog = () => {
     return (
       <div>
         {blog.url}<br></br>
-        {blog.likes} likes <button className='button button__small' onClick={() => increaseLikesByOne(blog.id)}>Like </button>
-        {<button style={toggleDelete} className='button button__small button__red' onClick={() => removeBlog(blog.id, blog.title)}>Delete</button>}<br></br>
+        {blog.likes} likes <button id='like_button' className='button button__small' onClick={() => increaseLikesByOne(blog.id)}>Like </button>
+        {<button style={showIfSameUser} className='button button__small button__red' onClick={() => removeBlog(blog.id, blog.title)}>Delete</button>}<br></br>
       </div>
     )
   }
@@ -21,7 +22,7 @@ const Blog = ({ increaseLikesByOne, blog, user, removeBlog }) => {
   return (
     <div className='blog' key={blog.id} >
       <div className='blog--title' key={blog.title}>{blog.title} by {blog.author}&ensp;
-        <button onClick={() => setShowAll(!showAll)}>
+        <button id='view_hide_button' onClick={() => setShowAll(!showAll)}>
           {showAll ? 'hide' : 'view'}
         </button>
       </div>
