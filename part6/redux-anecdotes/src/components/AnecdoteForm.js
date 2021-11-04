@@ -12,10 +12,13 @@ const AnecdoteForm = (props) => {
     dispatch(addAnecdote(content))
   }
   return (
-    <form onSubmit={newAnecdote}>
-      <div><input name='anecdote' /></div>
-      <button type='submit'>create</button>
-    </form>
+    <div>
+      <h2>Create new</h2>
+      <form onSubmit={newAnecdote}>
+        <div><input name='anecdote' /></div>
+        <button type='submit'>create</button>
+      </form>
+    </div>
   )
 }
 
