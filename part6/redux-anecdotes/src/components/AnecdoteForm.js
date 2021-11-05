@@ -11,7 +11,7 @@ const AnecdoteForm = (props) => {
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     dispatch(addAnecdote(content))
-    dispatch(addNotification('MESSAGE', `Added ${content} to the list`))
+    dispatch(addNotification(`Added ${content} to the list`, 5))
   }
   return (
     <div>

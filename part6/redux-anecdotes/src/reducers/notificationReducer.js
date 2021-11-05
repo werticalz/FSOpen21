@@ -5,17 +5,17 @@ const asMessageObject = (type, text) => {
   }
 }
 
-export const addNotification = (type, text) => {
+export const addNotification = (text, time) => {
   return async dispatch => {
     dispatch({
-      type: type,
+      type: 'MESSAGE',
       text: text
     })
     setTimeout(() => {
       dispatch({
         type: 'HIDE_NOTIFICATION'
       })
-    }, 5000)
+    }, time * 1000)
   }
 }
 const reducer = (state = null, action) => {
