@@ -9,10 +9,9 @@ const AnecdoteList = () => {
 
   const dispatch = useDispatch()
 
-  const vote = (id) => {
-    const votedAnecdote = anecdotes.find(a => id === a.id)
-    dispatch(voteAnecdote(id))
-    dispatch(addNotification('MESSAGE', `Added a vote to ${votedAnecdote.content}`))
+  const vote = (anecdote) => {
+    dispatch(voteAnecdote(anecdote))
+    dispatch(addNotification('MESSAGE', `Added a vote to ${anecdote.content}`))
   }
 
   return (
@@ -25,7 +24,7 @@ const AnecdoteList = () => {
         </div>
         <div>
           has {anecdote.votes}
-          <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => vote(anecdote)}>vote</button>
         </div>
       </div>
     )
