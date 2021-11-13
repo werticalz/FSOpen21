@@ -6,12 +6,14 @@ const asMessageObject = (type, text) => {
 }
 
 export const addNotification = (text, time) => {
+  window.clearTimeout(window._notificationTimeout)
+
   return async dispatch => {
     dispatch({
       type: 'MESSAGE',
       text: text
     })
-    setTimeout(() => {
+    window._notificationTimeout = setTimeout(() => {
       dispatch({
         type: 'HIDE_NOTIFICATION'
       })
