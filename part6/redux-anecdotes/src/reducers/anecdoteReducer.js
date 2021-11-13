@@ -31,6 +31,13 @@ export const initializeAnecdotes = (anecdotes) => {
   }
 }
 
+export function addAnecdote(anecdote) {
+  return async dispatch => {
+    const response = await anecdoteService
+      .createNew(asObject(anecdote))
+    dispatch({ type: 'ADD', data: response })
+  }
+}
 
 const reducer = (state = [], action) => {
   switch (action.type) {
@@ -45,12 +52,6 @@ const reducer = (state = [], action) => {
   }
 }
 
-export function addAnecdote(anecdote) {
-  return async dispatch => {
-    const response = await anecdoteService
-      .createNew(asObject(anecdote))
-    dispatch({ type: 'ADD', data: response })
-  }
-}
+
 
 export default reducer
