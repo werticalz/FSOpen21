@@ -23,9 +23,9 @@ const CreateNew = (props) => {
 
   const resetAll = (event) => {
     event.preventDefault()
-    content.reset()
-    author.reset()
-    info.reset()
+    content.onReset()
+    author.onReset()
+    info.onReset()
   }
 
   return (
