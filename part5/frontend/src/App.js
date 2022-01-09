@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import Blog from './components/blog'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import { addNotification } from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [message, setMessage] = useState(null)
   const [user, setUser] = useState(null)
-
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService
@@ -27,26 +28,20 @@ const App = () => {
     }
   }, [])
 
-  useEffect(() => {
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
-  }, [message])
-
   const addBlog = async (blogObject) => {
     try {
       const response = await blogService.create(blogObject)
       setBlogs(blogs.concat(response))
-      setMessage({
+      dispatch(addNotification({
         text: `Added blog ${response.title}`,
         type: 'success'
-      })
+      }))
     } catch (exception) {
       console.log(exception)
-      setMessage({
+      dispatch(addNotification({
         text: 'Unable to add this blog',
         type: 'error'
-      })
+      }))
     }
   }
 
@@ -55,18 +50,18 @@ const App = () => {
     if (confirmation) {
       try {
         let response = await blogService.remove(id)
-        setMessage({
+        dispatch(addNotification({
           type: 'success',
           text: `Succesfully removed ${title} from the list`
-        })
+        }))
         response = await blogService.getAll()
         setBlogs(response)
       } catch (exception) {
         console.log(exception)
-        setMessage({
+        dispatch(addNotification({
           type: 'error',
           text: 'Unfortunately something went wrong and we were not able to remove this blog'
-        })
+        }))
       }
     }
   }
@@ -80,16 +75,16 @@ const App = () => {
       await blogService.update(id, changedBlog)
       let response = await blogService.getAll()
       setBlogs(response)
-      setMessage({
+      dispatch(addNotification({
         type: 'success',
         text: `Added a like to ${blog.title}`
-      })
+      }))
     } catch (exception) {
       console.log(exception)
-      setMessage({
+      dispatch(addNotification({
         text: `Blog with id ${id} cannot be found`,
         type: 'error'
-      })
+      }))
     }
   }
 
@@ -103,31 +98,30 @@ const App = () => {
       )
       setUser(user.username)
       window.location.reload(false)
-      setMessage({
+      dispatch(addNotification({
         text: `Logged in as ${user.name}`,
         type: 'success',
-      })
+      }))
     } catch (exception) {
-      console.log(exception)
-      setMessage({
+      dispatch(addNotification({
         text: 'Wrong username & password combination',
         type: 'error',
-      })
+      }))
     }
   }
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
-    setMessage({
+    dispatch(addNotification({
       text: 'Just logged out! See you soon.',
       type: 'success'
-    })
+    }))
   }
 
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={message} />
+      <Notification />
       {user === null ?
         <LoginForm
           login={login}
