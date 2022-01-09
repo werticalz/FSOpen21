@@ -1,8 +1,13 @@
 import notificationReducer from "./reducers/notificationReducer"
-import { applyMiddleware, createStore } from 'redux'
-import thunk from 'redux-thunk'
+import blogReducer from './reducers/blogReducer'
+import { combineReducers, applyMiddleware, createStore } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
-const reducer = notificationReducer
+import thunk from 'redux-thunk'
+
+const reducer = combineReducers({
+  notifications: notificationReducer,
+  blogs: blogReducer
+})
 
 const store = createStore(
   reducer,

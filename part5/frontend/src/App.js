@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/blog'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
@@ -7,17 +7,16 @@ import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import { addNotification } from './reducers/notificationReducer'
-
+import { addBlog, initialize } from './reducers/blogReducer'
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector(state => state.blogs)
   const [user, setUser] = useState(null)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs))
-  }, [])
+    console.log('initializing blogs')
+    dispatch(initialize())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -28,12 +27,11 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = async (blogObject) => {
+  const addB = (blogObject) => {
     try {
-      const response = await blogService.create(blogObject)
-      setBlogs(blogs.concat(response))
+      dispatch(addBlog(blogObject))
       dispatch(addNotification({
-        text: `Added blog ${response.title}`,
+        text: `Added blog ${blogObject.title}`,
         type: 'success'
       }))
     } catch (exception) {
@@ -45,10 +43,11 @@ const App = () => {
     }
   }
 
-  const removeBlog = async (id, title) => {
+  /*const removeBlog = (id, title) => {
     const confirmation = window.confirm(`Remove ${title}?`)
     if (confirmation) {
       try {
+        dispatch()
         let response = await blogService.remove(id)
         dispatch(addNotification({
           type: 'success',
@@ -86,7 +85,7 @@ const App = () => {
         type: 'error'
       }))
     }
-  }
+  }*/
 
   const login = async (userObject) => {
     try {
@@ -130,11 +129,12 @@ const App = () => {
         <div>
           <p>Logged in as {user.name}</p>
           <button className='button' onClick={handleLogout}>Logout</button>
-          <BlogForm addBlog={addBlog} />
+          <BlogForm addBlog={addB} />
         </div>}
       <h2>Blogs:</h2><div className='blogs'>
+        {console.log(blogs)}
         {blogs.sort((x, y) => (x.likes > y.likes ? -1 : 1)) && blogs.map((blog) =>
-          <Blog key={blog.id} increaseLikesByOne={increaseLikesByOne} blog={blog} user={user} removeBlog={removeBlog} />
+          <Blog key={blog.id} /*increaseLikesByOne={increaseLikesByOne}*/ blog={blog} user={user} /*removeBlog={removeBlog}*/ />
         )}
       </div>
     </div>
